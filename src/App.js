@@ -1,8 +1,24 @@
-import { ArcSeries, HorizontalGridLines, LineSeries, MarkSeries, VerticalBarSeries, VerticalGridLines, XAxis, XYPlot, YAxis } from 'react-vis';
+import { 
+  HorizontalGridLines, 
+  LineSeries, 
+  MarkSeries, 
+  VerticalBarSeries, 
+  VerticalGridLines, 
+  XAxis, XYPlot, YAxis 
+} from 'react-vis';
 import './App.css';
 import '../node_modules/react-vis/dist/style.css';
+import { readRemoteFile } from 'react-papaparse';
+import fileCSV from './data/data-csv.csv'
 
 function App() {
+
+  readRemoteFile(fileCSV,{
+    download: true,
+    complete: (results) => {
+      console.log("csv-file-data: ", results.data);
+    }
+  })
 
   const data = [
     {x: 0, y: 8},
