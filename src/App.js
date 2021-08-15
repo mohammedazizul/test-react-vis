@@ -10,15 +10,21 @@ import './App.css';
 import '../node_modules/react-vis/dist/style.css';
 import { readRemoteFile } from 'react-papaparse';
 import fileCSV from './data/data-csv.csv'
+import { useEffect, useState } from 'react';
 
 function App() {
 
-  readRemoteFile(fileCSV,{
-    download: true,
-    complete: (results) => {
-      console.log("csv-file-data: ", results.data);
-    }
-  })
+  const [fileData, setFileData] = useState([]);
+
+  useEffect(() => {
+    readRemoteFile(fileCSV,{
+      download: true,
+      header: true,
+      complete: (results) => {
+        console.log("csv-file-data: ", results.data);
+      }
+    })
+  }, [])
 
   const data = [
     {x: 0, y: 8},
@@ -33,11 +39,26 @@ function App() {
     {x: 9, y: 0}
   ];
 
+  console.log(fileData);
+
   return (
     <div className="App">
+
+      <div className="center">
+        <span>data from csv file</span>
+        {
+          fileData ? (
+            <p>{JSON.stringify(data)}</p>
+          ) : (
+            <div>Loading...</div>
+          )
+        }
+      </div>
+
       <h1>test plot with fake data</h1>
 
       <div className="center">
+
         <div className="center">
           <XYPlot height={300} width={300}>
             <VerticalBarSeries data={data}></VerticalBarSeries>
@@ -70,7 +91,6 @@ function App() {
         </div>
 
       </div>
-
     </div>
   );
 }
