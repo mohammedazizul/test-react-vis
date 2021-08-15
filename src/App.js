@@ -10,28 +10,32 @@ import './App.css';
 import '../node_modules/react-vis/dist/style.css';
 import { readRemoteFile } from 'react-papaparse';
 import csvFile from './data/data-csv.csv'
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 function App() {
 
+  const hasSetData = useRef(false); // fix netlify error of : React Hook useEffect has a missing dependency
   const [fileData, setFileData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(
     () => {
-      readRemoteFile(csvFile,{
-        download: true,
-        header: true,
-        dynamicTyping: true,
-        complete: (results) => {
-          console.log("csv-file-data: ", results.data);
-          setFileData(results.data);
-          setLoading(false);
-          console.log(fileData);
-        }
-      });
+      if(!hasSetData.current){
+        readRemoteFile(csvFile,{
+          download: true,
+          header: true,
+          dynamicTyping: true,
+          complete: (results) => {
+            console.log("csv-file-data: ", results.data);
+            setFileData(results.data);
+            setLoading(false);
+            hasSetData.current = true;
+            console.log(fileData);
+          }
+        });
+      }
     },
-    []
+    [fileData]
   );
 
   // const data = [
