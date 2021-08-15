@@ -22,6 +22,8 @@ function App() {
       header: true,
       complete: (results) => {
         console.log("csv-file-data: ", results.data);
+        setFileData(results.data)
+        console.log(fileData);
       }
     })
   }, [])
@@ -39,7 +41,7 @@ function App() {
     {x: 9, y: 0}
   ];
 
-  console.log(fileData);
+  
 
   return (
     <div className="App">
@@ -60,11 +62,17 @@ function App() {
       <div className="center">
 
         <div className="center">
-          <XYPlot height={300} width={300}>
-            <VerticalBarSeries data={data}></VerticalBarSeries>
-            <XAxis></XAxis>
-            <YAxis></YAxis>
-          </XYPlot>
+            {
+              fileData ? (
+                <XYPlot height={300} width={300} color="red">
+                  <VerticalBarSeries data={data}></VerticalBarSeries>
+                  <XAxis></XAxis>
+                  <YAxis></YAxis>
+                </XYPlot>
+              ) : (
+                <div>Loading...</div>
+              )
+            } 
           <span>Vertical Bar Plot</span>
         </div>
 
@@ -80,7 +88,7 @@ function App() {
         </div>
 
         <div className="center">
-          <XYPlot height={300} width={300}>
+          <XYPlot height={300} width={300} color="blue">
             <MarkSeries data={data}></MarkSeries>
             <VerticalGridLines></VerticalGridLines>
             <HorizontalGridLines></HorizontalGridLines>
