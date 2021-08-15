@@ -9,39 +9,43 @@ import {
 import './App.css';
 import '../node_modules/react-vis/dist/style.css';
 import { readRemoteFile } from 'react-papaparse';
-import fileCSV from './data/data-csv.csv'
+import csvFile from './data/data-csv.csv'
 import { useEffect, useState } from 'react';
 
 function App() {
 
   const [fileData, setFileData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    readRemoteFile(fileCSV,{
-      download: true,
-      header: true,
-      complete: (results) => {
-        console.log("csv-file-data: ", results.data);
-        setFileData(results.data)
-        console.log(fileData);
-      }
-    })
-  }, [])
+  useEffect(
+    () => {
+      readRemoteFile(csvFile,{
+        download: true,
+        header: true,
+        dynamicTyping: true,
+        complete: (results) => {
+          console.log("csv-file-data: ", results.data);
+          setFileData(results.data);
+          setLoading(false);
+          console.log(fileData);
+        }
+      });
+    },
+    []
+  );
 
-  const data = [
-    {x: 0, y: 8},
-    {x: 1, y: 5},
-    {x: 2, y: 4},
-    {x: 3, y: 9},
-    {x: 4, y: 1},
-    {x: 5, y: 7},
-    {x: 6, y: 6},
-    {x: 7, y: 3},
-    {x: 8, y: 2},
-    {x: 9, y: 0}
-  ];
-
-  
+  // const data = [
+  //   {x: 0, y: 8},
+  //   {x: 1, y: 5},
+  //   {x: 2, y: 4},
+  //   {x: 3, y: 9},
+  //   {x: 4, y: 1},
+  //   {x: 5, y: 7},
+  //   {x: 6, y: 6},
+  //   {x: 7, y: 3},
+  //   {x: 8, y: 2},
+  //   {x: 9, y: 0}
+  // ];
 
   return (
     <div className="App">
@@ -49,36 +53,30 @@ function App() {
       <div className="center">
         <span>data from csv file</span>
         {
-          fileData ? (
-            <p>{JSON.stringify(data)}</p>
+          !loading ? (
+            <p>{JSON.stringify(fileData)}</p>
           ) : (
             <div>Loading...</div>
           )
         }
       </div>
 
-      <h1>test plot with fake data</h1>
+      <h1>test plot with csv file data</h1>
 
       <div className="center">
 
         <div className="center">
-            {
-              fileData ? (
-                <XYPlot height={300} width={300} color="red">
-                  <VerticalBarSeries data={data}></VerticalBarSeries>
-                  <XAxis></XAxis>
-                  <YAxis></YAxis>
-                </XYPlot>
-              ) : (
-                <div>Loading...</div>
-              )
-            } 
+          <XYPlot height={300} width={300} color="red">
+            <VerticalBarSeries data={fileData}></VerticalBarSeries>
+            <XAxis></XAxis>
+            <YAxis></YAxis>
+          </XYPlot>
           <span>Vertical Bar Plot</span>
         </div>
 
         <div className="center">
           <XYPlot height={300} width={300}>
-            <LineSeries data={data}></LineSeries>
+            <LineSeries data={fileData}></LineSeries>
             <VerticalGridLines></VerticalGridLines>
             <HorizontalGridLines></HorizontalGridLines>
             <XAxis></XAxis>
@@ -89,7 +87,7 @@ function App() {
 
         <div className="center">
           <XYPlot height={300} width={300} color="blue">
-            <MarkSeries data={data}></MarkSeries>
+            <MarkSeries data={fileData}></MarkSeries>
             <VerticalGridLines></VerticalGridLines>
             <HorizontalGridLines></HorizontalGridLines>
             <XAxis></XAxis>
